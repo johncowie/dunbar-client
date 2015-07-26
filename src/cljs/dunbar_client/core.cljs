@@ -3,19 +3,46 @@
               [reagent.session :as session]
               [secretary.core :as secretary :include-macros true]
               [goog.events :as events]
-              [goog.history.EventType :as EventType])
+              [goog.history.EventType :as EventType]
+              [dunbar-client.view :as view]
+              [dunbar-client.model :as model]
+              [dunbar-client.state :as state])
     (:import goog.History))
+
+
+
+(def history (History. ))
+
+(defn nav! [token]
+  (.setToken history token))
+
+;; -------------------------
+;; History
+;; must be called after routes have been defined
+(defn hook-browser-navigation! []
+  (doto history
+    (events/listen
+     EventType/NAVIGATE
+     (fn [event]
+       (secretary/dispatch! (.-token event))))
+    (.setEnabled true)))
+
 
 ;; -------------------------
 ;; Views
 
-(defn home-page []
-  [:div [:h2 "Welcome to dunbar-client"]
-   [:div [:a {:href "#/about"} "go to about page"]]])
 
-(defn about-page []
-  [:div [:h2 "About dunbar-client"]
-   [:div [:a {:href "#/"} "go to the home page"]]])
+(defn friends-page []
+  [view/friends-list (state/friends)])
+
+(defn home-page []
+  (let [new-friend (atom (model/blank-friend))]
+    [:div
+     [(view/friend-form #(do (state/add-friend! @new-friend)
+                             ;(nav! "/friends")
+                           )) new-friend]
+     [view/friends-list (state/friends)]]))
+
 
 (defn current-page []
   [:div [(session/get :current-page)]])
@@ -25,21 +52,11 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (session/put! :current-page #'home-page))
+  (session/put! :current-page home-page))
 
-(secretary/defroute "/about" []
-  (session/put! :current-page #'about-page))
+(secretary/defroute "/friends" []
+  (session/put! :current-page friends-page))
 
-;; -------------------------
-;; History
-;; must be called after routes have been defined
-(defn hook-browser-navigation! []
-  (doto (History.)
-    (events/listen
-     EventType/NAVIGATE
-     (fn [event]
-       (secretary/dispatch! (.-token event))))
-    (.setEnabled true)))
 
 ;; -------------------------
 ;; Initialize app
