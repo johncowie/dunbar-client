@@ -6,7 +6,8 @@
             [hiccup.page :refer [include-js include-css]]
             [prone.middleware :refer [wrap-exceptions]]
             [ring.middleware.reload :refer [wrap-reload]]
-            [environ.core :refer [env]]))
+            [environ.core :refer [env]]
+            [dunbar-client.css :as css]))
 
 (def home-page
   (html
@@ -15,7 +16,7 @@
      [:meta {:charset "utf-8"}]
      [:meta {:name "viewport"
              :content "width=device-width, initial-scale=1"}]
-     (include-css (if (env :dev) "css/site.css" "css/site.min.css"))]
+     (include-css (if (env :dev) "css/garden.css" "css/garden.min.css"))]
     [:body
      [:div#app
       [:h3 "ClojureScript has not been compiled!"]

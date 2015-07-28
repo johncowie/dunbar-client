@@ -17,10 +17,14 @@
 (defn friend-form [submit-function]
   (fn [friend]
     [:div
+       [:h1 "Add a friend"]
        [:form
           [:fieldset
             [(input-field "First name: ") (cursor friend model/friend->first-name)]
             [(input-field "Last name: ") (cursor friend model/friend->last-name)]]
+          [:fieldset
+            [(input-field "Date of birth: ") (cursor friend model/friend->dob)]
+           ]
         [:input {:type "button" :value "Create" :on-click submit-function}]
         ]]))
 

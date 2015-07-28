@@ -6,7 +6,6 @@
     {:friends []
      :next-id 0}))
 
-
 (defn next-id []
   (cursor state [:next-id]))
 

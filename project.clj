@@ -19,7 +19,8 @@
                  [hiccup "1.0.5"]
                  [environ "1.0.0"]
                  [org.clojure/clojurescript "0.0-3308" :scope "provided"]
-                 [secretary "1.2.3"]]
+                 [secretary "1.2.3"]
+                 [garden "1.2.5"]]
 
   :plugins [[lein-environ "1.0.0"]
             [lein-asset-minifier "0.2.2"]]
@@ -59,7 +60,8 @@
 
                    :source-paths ["env/dev/clj"]
                    :plugins [[lein-figwheel "0.3.7"]
-                             [lein-cljsbuild "1.0.6"]]
+                             [lein-cljsbuild "1.0.6"]
+                             [lein-garden "0.2.6"]]
 
                    :injections [(require 'pjstadig.humane-test-output)
                                 (pjstadig.humane-test-output/activate!)]

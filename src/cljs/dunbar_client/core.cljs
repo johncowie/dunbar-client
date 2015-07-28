@@ -9,8 +9,6 @@
               [dunbar-client.state :as state])
     (:import goog.History))
 
-
-
 (def history (History. ))
 
 (defn nav! [token]
@@ -51,6 +49,7 @@
 ;; Routes
 (secretary/set-config! :prefix "#")
 
+;; Could replace references to session with our own state namespace
 (secretary/defroute "/" []
   (session/put! :current-page home-page))
 
