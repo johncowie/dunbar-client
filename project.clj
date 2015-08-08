@@ -20,7 +20,8 @@
                  [environ "1.0.0"]
                  [org.clojure/clojurescript "0.0-3308" :scope "provided"]
                  [secretary "1.2.3"]
-                 [garden "1.2.5"]]
+                 [garden "1.2.5"]
+		 [traversy "4.0.0"]]
 
   :plugins [[lein-environ "1.0.0"]
             [lein-asset-minifier "0.2.2"]]
