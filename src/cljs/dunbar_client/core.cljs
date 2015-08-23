@@ -6,10 +6,12 @@
               [goog.history.EventType :as EventType]
               [dunbar-client.view :as view]
               [dunbar-client.model :as model]
-              [dunbar-client.state :as state])
+              [dunbar-client.state :as state]
+              [dunbar-client.api :as api])
     (:import goog.History))
 
 (def history (History. ))
+(def api (api/new-stub-api))
 
 (defn nav! [token]
   (.setToken history token))
@@ -33,13 +35,19 @@
 (defn friends-page []
   [view/friends-list (state/friends)])
 
-(defn home-page []
+(defn create-friend-page []
   (let [new-friend (atom (model/blank-friend))]
     [:div
-     [(view/friend-form #(do (state/add-friend! @new-friend)
-                             ;(nav! "/friends")
-                           )) new-friend]
+     [(view/friend-form #(state/add-friend! @new-friend)) new-friend]
      [view/friends-list (state/friends)]]))
+
+(defn edit-friend-page [id]
+  (fn []
+    (let [friend (state/friend-by-id id)]
+      [:div
+        [(view/friend-form (constantly nil)) friend]
+        [view/friends-list (state/friends)]
+       ])))
 
 
 (defn current-page []
@@ -51,15 +59,19 @@
 
 ;; Could replace references to session with our own state namespace
 (secretary/defroute "/" []
-  (session/put! :current-page home-page))
+  (session/put! :current-page create-friend-page))
 
 (secretary/defroute "/friends" []
   (session/put! :current-page friends-page))
+
+(secretary/defroute "/friends/:id" [id]
+  (session/put! :current-page (edit-friend-page (js/parseInt id))))
 
 
 ;; -------------------------
 ;; Initialize app
 (defn mount-root []
+  (state/init-state! (api/load-friends api))
   (reagent/render [current-page] (.getElementById js/document "app")))
 
 (defn init! []
